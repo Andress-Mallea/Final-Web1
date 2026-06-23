@@ -13,7 +13,7 @@ export const login = async (username, password) => {
 
 
 export const getArtworks = async () => {
-  const response = await api.get('/api/artworks/');
+  const response = await api.get('/api/v1/artworks/'); 
   return response.data;
 };
 
