@@ -4,14 +4,16 @@ from identity.models import User
 
 class CommissionTier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    artist = models.ForeignKey(User, on_delete=models.CASCADE, realted_name='comission_tiers')
+    artist = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commission_tiers')
     title = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    delivey_days = models.PositiveIntegerField()
+    delivery_days = models.PositiveIntegerField()
+
     def __str__(self):
         return f"{self.title} - ${self.price}"
-class CommisionRequest(models.Model):
+
+class CommissionRequest(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pendiente'),
         ('accepted', 'Aceptado'),

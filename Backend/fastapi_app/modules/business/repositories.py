@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from identity.repositories import Base
+from modules.identity.repositories import Base  
 
 class CommissionORM(Base):
     __tablename__ = "business_commissionrequest"

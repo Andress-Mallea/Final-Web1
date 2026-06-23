@@ -1,6 +1,6 @@
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from identity.repositories import Base
+from modules.identity.repositories import Base  
 
 class FavoriteORM(Base):
     __tablename__ = "interactions_favorite"

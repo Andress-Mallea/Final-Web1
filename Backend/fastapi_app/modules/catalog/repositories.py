@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Integer, select
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from .schemas import ArtworkResponse
-from identity.repositories import Base 
+from modules.identity.repositories import Base  
 
 class ArtworkORM(Base):
     __tablename__ = "catalog_artwork"
