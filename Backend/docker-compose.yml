@@ -83,14 +83,15 @@ services:
     depends_on:
       - django_admin
       - fastapi_api
-    frontend:
-      build: ./Frontend
-      container_name: deviantart_frontend
-      ports:
-        - "3000:3000"
-      volumes:
-        - ./Frontend:/app
-        - /app/node_modules
+  frontend:
+    build: ./Frontend
+    container_name: deviantart_frontend
+    ports:
+      - "5173:5173" 
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    command: npm run dev
 volumes:
   postgres_data:
     name: deviantart_postgres_data
