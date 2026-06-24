@@ -7,12 +7,17 @@ import ProfilePage from "./pages/ProfilePage";
 import AuthPage from "./pages/AuthPage";
 import ChatPage from "./pages/ChatPage";
 import PublishPage from "./pages/PublishPage";
-
+interface User {
+  name: string;
+  avatar: string;
+}
 function App() {
-  const [feedMode, setFeedMode] = useState("hub");
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [feedMode, setFeedMode] = useState<string>("hub");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); 
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  
+  
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const savedUser = localStorage.getItem("arteria_user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
@@ -20,7 +25,8 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  function toggleTag(tag) {
+  
+  function toggleTag(tag: string) {
     setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
   }
   const showNav = location.pathname !== "/auth";
@@ -61,8 +67,8 @@ function App() {
             
             <Route path="/auth" element={
               <AuthPage
-                onSuccess={(userData) => {
-                  const user = {
+                onSuccess={(userData: { username: string }) => {
+                  const user: User = {
                     name: userData.username,
                     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + userData.username
                   };

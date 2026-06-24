@@ -1,29 +1,45 @@
-import { Fragment } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Filter, Sparkles } from "lucide-react";
 import { getArtworks } from "../services/api";
-import ArtworkCard from "../components/artwork/ArtworkCard";
+import ArtworkCard, { Artwork } from "../components/artwork/ArtworkCard";
 import TagPill from "../components/common/TagPill";
 
 const PAGE_SIZE = 6;
 
 
-function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick }) {
- 
-  const [artworks, setArtworks] = useState([]);
-  const [backendLoading, setBackendLoading] = useState(true);
+interface HubPageProps {
+  feedMode: string;
+  selectedTags?: string[];
+  searchQuery?: string;
+  onArtistClick: () => void;
+}
+
+export default function HubPage({ 
+  feedMode, 
+  selectedTags = [], 
+  searchQuery = "", 
+  onArtistClick 
+}: HubPageProps) {
+  
+  
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [backendLoading, setBackendLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let mounted = true;
-    getArtworks().then((data) => {
+    
+   
+    getArtworks().then((data: any) => {
       if (!mounted) return;
       
       if (!Array.isArray(data)) {
         setArtworks([]);
         return;
       }
-      const realArtworks = data.map((art) => ({
-        id: art.id,
+      
+      
+      const realArtworks: Artwork[] = data.map((art: any) => ({
+        id: String(art.id),
         title: art.title || "Sin título",
         imageUrl: art.image_url || art.imageUrl || "https://via.placeholder.com/400x500?text=No+Image", 
         artist: art.artist?.username || art.artist || "Artista Desconocido",
@@ -46,6 +62,7 @@ function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick 
 
     return () => { mounted = false; };
   }, []);
+
   const baseFiltered = artworks.filter((art) => {
     const titleMatch = art.title?.toLowerCase().includes(searchQuery.toLowerCase());
     const artistMatch = art.artist?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,11 +75,13 @@ function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick 
     return matchQuery && matchTags && matchFeed;
   });
 
-  const [visibleItems, setVisibleItems] = useState(() => baseFiltered.slice(0, PAGE_SIZE));
-  const [pageIndex, setPageIndex] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const sentinelRef = useRef(null);
+  const [visibleItems, setVisibleItems] = useState<Artwork[]>(() => baseFiltered.slice(0, PAGE_SIZE));
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  
+ 
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const resetTimer = setTimeout(() => {
@@ -167,5 +186,3 @@ function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick 
     </div>
   );
 }
-
-export default HubPage;

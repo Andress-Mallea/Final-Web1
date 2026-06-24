@@ -1,30 +1,55 @@
-
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { getArtworks } from "../services/api"; 
 import { normalizeArtwork } from "../utils/normalizeArtwork";
-
 import Avatar from "../components/common/Avatar";
 
-function ProfilePage({ onBack, currentUser }) {
- 
-  const [myArtworks, setMyArtworks] = useState([]);
+
+export interface User {
+  name: string;
+  avatar: string;
+}
+
+
+interface ProfilePageProps {
+  onBack: () => void;
+  currentUser: User | null;
+}
+
+export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
+
+  const [myArtworks, setMyArtworks] = useState<any[]>([]);
 
   useEffect(() => {
-    getArtworks().then((data) => {
+
+    if (!currentUser) return;
+
+    getArtworks().then((data: any[]) => {
       const filtered = data
         .map(normalizeArtwork)
-        .filter((art) => {
-          return art.artist.toLowerCase() === currentUser.name.toLowerCase();
+        .filter((art: any) => {
+         
+          return art.artist?.toLowerCase() === currentUser.name?.toLowerCase();
         });
       setMyArtworks(filtered);
+    }).catch((error) => {
+      console.error("Error cargando el perfil:", error);
     });
   }, [currentUser]);
+
+ 
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <div className="pb-12">
       <div className="relative h-52 bg-muted overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=300&fit=crop&auto=format" className="w-full h-full object-cover" />
+        <img 
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=300&fit=crop&auto=format" 
+          className="w-full h-full object-cover" 
+          alt="Profile cover"
+        />
         <button onClick={onBack} className="absolute top-4 left-4 p-2 rounded-lg bg-black/40 backdrop-blur-sm text-white">
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -34,14 +59,14 @@ function ProfilePage({ onBack, currentUser }) {
           <Avatar src={currentUser.avatar} size={24} className="border-4 border-background" />
           <div className="mb-2">
             <h2 className="text-xl font-bold text-foreground">{currentUser.name}</h2>
-            <p className="text-sm text-muted-foreground font-mono">@{currentUser.name.toLowerCase()}</p>
+            <p className="text-sm text-muted-foreground font-mono">@{currentUser.name?.toLowerCase()}</p>
           </div>
         </div>
         <div className="pt-6">
           <div className="columns-2 lg:columns-3 gap-4">
             {myArtworks.map((art) => (
               <div key={art.id} className="break-inside-avoid mb-4 rounded-xl overflow-hidden bg-card border border-border">
-                <img src={art.imageUrl} className="w-full object-cover" />
+                <img src={art.imageUrl} className="w-full object-cover" alt={art.title} />
                 <div className="p-3">
                   <p className="text-sm font-semibold">{art.title}</p>
                 </div>
@@ -54,5 +79,3 @@ function ProfilePage({ onBack, currentUser }) {
     </div>
   );
 }
-
-export default ProfilePage;

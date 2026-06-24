@@ -2,7 +2,13 @@ import { Search, Plus, Bell, MessageSquare, User, Palette } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Avatar from "../common/Avatar";
 
-function TopNav({ searchQuery, setSearchQuery, currentUser }) {
+interface TopNavProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  currentUser: { name: string; avatar: string } | null;
+}
+
+export default function TopNav({ searchQuery, setSearchQuery, currentUser }: TopNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -63,5 +69,3 @@ function TopNav({ searchQuery, setSearchQuery, currentUser }) {
     </header>
   );
 }
-
-export default TopNav;

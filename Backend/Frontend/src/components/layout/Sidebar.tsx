@@ -3,7 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ALL_TAGS } from "../../data/mockData";
 import TagPill from "../common/TagPill";
 
-function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag }) {
+interface SidebarProps {
+  feedMode: string;
+  setFeedMode: (mode: string) => void;
+  selectedTags: string[];
+  toggleTag: (tag: string) => void;
+}
+
+export default function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -84,5 +91,3 @@ function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag }) {
     </aside>
   );
 }
-
-export default Sidebar;

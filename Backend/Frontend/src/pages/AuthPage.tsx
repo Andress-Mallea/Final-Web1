@@ -1,33 +1,37 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { login } from "../services/api";
 
-function AuthPage({ onSuccess }) {
-  const [mode, setMode] = useState("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+interface AuthPageProps {
+  onSuccess?: (userData: { username: string; [key: string]: any }) => void;
+}
+
+function AuthPage({ onSuccess }: AuthPageProps) {
+  
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+ 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(""); 
     setIsLoading(true);
 
     try {
       if (mode === "login") {
-        
         const data = await login(username, password);
         console.log("¡Login exitoso!", data);
         
-        
         if (onSuccess) onSuccess({ ...data, username }); 
       } else {
-        
         console.log("El registro se implementará en el próximo paso.");
         setError("El registro aún no está conectado. Usa 'Sign In'.");
       }
-    } catch (err) {
+    } catch (err: any) { 
       console.error("Error de autenticación:", err);
       const detail = err.response?.data?.detail;
       if (Array.isArray(detail)) {
@@ -42,7 +46,6 @@ function AuthPage({ onSuccess }) {
 
   return (
     <div className="min-h-[calc(100vh-56px)] flex">
-      
       <div className="hidden lg:flex flex-col flex-1 relative overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1614729939124-032d1e6c9945?w=900&h=900&fit=crop&auto=format"
@@ -67,7 +70,7 @@ function AuthPage({ onSuccess }) {
                 <button
                   key={m}
                   type="button"
-                  onClick={() => { setMode(m); setError(""); }}
+                  onClick={() => { setMode(m as "login" | "signup"); setError(""); }}
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all capitalize ${
                     mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                   }`}
