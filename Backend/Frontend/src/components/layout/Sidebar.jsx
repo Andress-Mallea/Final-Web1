@@ -63,7 +63,7 @@ function Sidebar({
       /* @__PURE__ */ jsxs(
         "button",
         {
-          onClick: () => setPage("profile"),
+          onClick: () => setPage("profile"), 
           className: `w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${page === "profile" ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`,
           children: [
             /* @__PURE__ */ jsx(User, { className: "w-4 h-4 shrink-0" }),
@@ -82,9 +82,14 @@ function Sidebar({
           ]
         }
       ),
-      /* @__PURE__ */ jsxs("button", { className: "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors", children: [
+      /* @__PURE__ */ jsxs("button", { 
+        onClick: () => {
+          localStorage.removeItem("arteria_user");
+          window.location.reload();
+        },
+        className: "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors", children: [
         /* @__PURE__ */ jsx(Settings, { className: "w-4 h-4 shrink-0" }),
-        "Settings"
+        "Sign Out"
       ] })
     ] })
   ] });

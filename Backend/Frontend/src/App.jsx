@@ -12,7 +12,10 @@ function App() {
   const [feedMode, setFeedMode] = useState("hub");
   const [selectedTags, setSelectedTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem("arteria_user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   function toggleTag(tag) {
     setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
   }
@@ -51,15 +54,17 @@ function App() {
             onArtistClick: () => setPage("profile")
           }
         ),
-        page === "profile" && /* @__PURE__ */ jsx(ProfilePage, { onBack: () => setPage("hub") }),
+       page === "profile" && /* @__PURE__ */ jsx(ProfilePage, {onBack: () => setPage("hub"),currentUser: currentUser }),
         page === "auth" && /* @__PURE__ */ jsx(
           AuthPage,
           {
-            onSuccess: () => {
-              setCurrentUser({
-                name: "NightPixel",
-                avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop"
-              });
+           onSuccess: (userData) => {
+              const user = {
+                name: userData.username, 
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + userData.username
+              };
+              setCurrentUser(user);
+              localStorage.setItem("arteria_user", JSON.stringify(user));
               setPage("hub");
             }
           }

@@ -21,7 +21,7 @@ function AuthPage({ onSuccess }) {
         console.log("¡Login exitoso!", data);
         
         
-        if (onSuccess) onSuccess(data); 
+        if (onSuccess) onSuccess({ ...data, username }); 
       } else {
         
         console.log("El registro se implementará en el próximo paso.");

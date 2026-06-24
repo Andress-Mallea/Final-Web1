@@ -56,7 +56,14 @@ function TopNav({
           children: /* @__PURE__ */ jsx(MessageSquare, { className: "w-4 h-4" })
         }
       ),
-      currentUser ? /* @__PURE__ */ jsx("button", { onClick: () => setPage("profile"), className: "ml-1", children: /* @__PURE__ */ jsx(Avatar, { src: currentUser.avatar, size: 8, className: "hover:ring-2 hover:ring-primary transition-all" }) }) : /* @__PURE__ */ jsxs(
+      currentUser ? (
+        <button 
+          onClick={() => setPage("profile")} 
+          className="ml-1 hover:opacity-80 transition-opacity"
+        >
+          <Avatar src={currentUser.avatar} size={8} />
+        </button>
+      ) : /* @__PURE__ */ jsxs(
         "button",
         {
           onClick: () => setPage("auth"),
