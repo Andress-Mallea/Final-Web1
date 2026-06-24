@@ -51,7 +51,6 @@ async def health_check():
         "project": settings.PROJECT_NAME,
         "message": "La API modular está funcionando y conectada."
     }
-
 os.makedirs("uploads", exist_ok=True) 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.include_router(identity_router, prefix=settings.API_V1_STR)

@@ -6,21 +6,14 @@ class CatalogService:
         self.repo = repo
 
     async def fetch_feed(self):
-
         artworks = await self.repo.get_all_artworks()
-        
-
         artworks_dict = []
         for a in artworks:
-
-            full_image_url = f"http://localhost:8000{a.image_url}" if a.image_url.startswith("/") else a.image_url
-            
             artworks_dict.append({
                 "id": str(a.id), 
                 "title": a.title, 
-                "image_url": full_image_url  
+                "image_url": a.image_url 
             })
-            
         return artworks_dict
     async def create_artwork(self, title: str, description: str, image_url: str, tag_ids: list, artist_id: int):
         new_artwork = await self.repo.create_artwork(title, description, image_url, tag_ids, artist_id)

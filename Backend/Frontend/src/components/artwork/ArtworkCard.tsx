@@ -31,14 +31,21 @@ export default function ArtworkCard({ art, onArtistClick }: ArtworkCardProps) {
     landscape: "h-44",
     square: "h-56"
   };
-
+  let imageSource = art.imageUrl;
+  if (!imageSource.startsWith("http")) {
+    const cleanPath = imageSource.startsWith("/") ? imageSource : `/${imageSource}`;
+    
+    imageSource = `http://localhost:8080${cleanPath}`;
+  }
   return (
     <div className={styles['artwork-card']}>
-     
       <div className={styles['artwork-card__media']}>
-        <img src={`http://localhost:8000${art.imageUrl}`} alt={art.title} className={styles['artwork-card__image']}/>
+        <img 
+          src={imageSource} 
+          alt={art.title} 
+          className={styles['artwork-card__image']}
+        />
       </div>
-      
       
       <div className={styles.card__footer}>
         <button onClick={(e) => { e.stopPropagation(); onArtistClick(); }} className={styles.card__artist}>
