@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
-from .schemas import UserCreate, Token
+from .schemas import UserCreate, Token,UserLogin
 from .repositories import UserRepository
 from .services import IdentityService
 
 router = APIRouter(prefix="/auth", tags=["Identity"])
 
 @router.post("/login", response_model=Token)
-async def login(data: UserCreate, db: AsyncSession = Depends(get_db)):
+async def login(data: UserLogin, db: AsyncSession = Depends(get_db)):
     repo = UserRepository(db)
     service = IdentityService(repo)
     

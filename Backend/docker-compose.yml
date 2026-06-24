@@ -101,6 +101,9 @@ services:
       - ./src:/app/src
       - ./frontend/src:/app/src 
     command: npm run dev -- --host
+    depends_on:
+      - django_admin
+      - fastapi_api
 volumes:
   postgres_data:
     name: deviantart_postgres_data
