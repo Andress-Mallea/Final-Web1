@@ -2,6 +2,7 @@ import { Home, Users, X, User, MessageSquare, Settings } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ALL_TAGS } from "../../data/mockData";
 import TagPill from "../common/TagPill";
+import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
   feedMode: string;
@@ -15,77 +16,65 @@ export default function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag
   const location = useLocation();
   const currentPath = location.pathname;
 
+  const isActive = (path: string, mode?: string) => 
+    currentPath === path && (!mode || feedMode === mode);
+
   return (
-    <aside className="fixed left-0 top-14 bottom-0 w-56 border-r border-border bg-sidebar flex flex-col overflow-y-auto z-40">
-      <div className="p-4 space-y-1">
-        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-3">Browse</p>
-        <button
-          onClick={() => {
-            setFeedMode("hub");
-            navigate("/");
-          }}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${currentPath === "/" && feedMode === "hub" ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+    <aside className={styles.sidebar}>
+      <div className={styles.sidebar__section}>
+        <p className={styles.sidebar__title}>Browse</p>
+        <button 
+          onClick={() => { setFeedMode("hub"); navigate("/"); }}
+          className={`${styles.sidebar__link} ${isActive("/", "hub") ? styles['sidebar__link--active'] : ""}`}
         >
-          <Home className="w-4 h-4 shrink-0" />
-          Hub
+          <Home className="w-4 h-4 shrink-0" /> Hub
         </button>
-        <button
-          onClick={() => {
-            setFeedMode("following");
-            navigate("/");
-          }}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${currentPath === "/" && feedMode === "following" ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+        <button 
+          onClick={() => { setFeedMode("following"); navigate("/"); }}
+          className={`${styles.sidebar__link} ${isActive("/", "following") ? styles['sidebar__link--active'] : ""}`}
         >
-          <Users className="w-4 h-4 shrink-0" />
-          Following
+          <Users className="w-4 h-4 shrink-0" /> Following
         </button>
       </div>
 
-      <div className="h-px bg-border mx-4"></div>
+      <div className={styles.sidebar__divider} />
 
       <div className="p-4 flex-1">
-        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-3">Filter by Tag</p>
-        <div className="flex flex-wrap gap-1.5">
+        <p className={styles.sidebar__title}>Filter by Tag</p>
+        <div className={styles.sidebar__tags}>
           {ALL_TAGS.map((tag) => (
             <TagPill key={tag} tag={tag} active={selectedTags.includes(tag)} onClick={() => toggleTag(tag)} />
           ))}
         </div>
         {selectedTags.length > 0 && (
-          <button
-            onClick={() => selectedTags.forEach(toggleTag)}
-            className="mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          <button onClick={() => selectedTags.forEach(toggleTag)}
+                  className={styles['sidebar__clear-btn']}
           >
             <X className="w-3 h-3" /> Clear filters
           </button>
         )}
       </div>
 
-      <div className="h-px bg-border mx-4"></div>
+      <div className={styles.sidebar__divider} />
 
-      <div className="p-4 space-y-1">
-        <button
+      <div className={styles.sidebar__section}>
+        <button 
           onClick={() => navigate("/profile")}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${currentPath === "/profile" ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+          className={`${styles.sidebar__link} ${isActive("/profile") ? styles['sidebar__link--active'] : ""}`}
         >
-          <User className="w-4 h-4 shrink-0" />
-          Profile
-        </button>
-        <button
-          onClick={() => navigate("/chat")}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${currentPath === "/chat" ? "bg-primary/15 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
-        >
-          <MessageSquare className="w-4 h-4 shrink-0" />
-          Commissions
+          <User className="w-4 h-4 shrink-0" /> Profile
         </button>
         <button 
-          onClick={() => {
-            localStorage.removeItem("arteria_user");
-            window.location.reload();
-          }}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          onClick={() => navigate("/chat")}
+          className={`${styles.sidebar__link} ${isActive("/chat") ? styles['sidebar__link--active'] : ""}`}
         >
-          <Settings className="w-4 h-4 shrink-0" />
-          Sign Out
+          <MessageSquare className="w-4 h-4 shrink-0" /> Commissions
+        </button>
+        <button 
+          onClick={() => { localStorage.removeItem("arteria_user"); window.location.reload(); }}
+          className={`${styles.sidebar__link} ${styles.sidebar__signout}`}
+        >
+          <Settings className="w-4 h-4 shrink-0" /> Sign Out
         </button>
       </div>
     </aside>

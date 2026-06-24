@@ -1,0 +1,22 @@
+.pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-bg);
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.pill:hover {
+  border-color: rgba(var(--primary-rgb), 0.4);
+  color: var(--foreground);
+}
+
+.pill--active {
+  background-color: rgba(var(--primary-rgb), 0.2);
+  border-color: rgba(var(--primary-rgb), 0.6);
+  color: var(--primary);
+}
