@@ -98,7 +98,8 @@ services:
     volumes:
       - ./Frontend:/app
       - /app/node_modules
-      - ./src:/app/src 
+      - ./src:/app/src
+      - ./frontend/src:/app/src 
     command: npm run dev -- --host
 volumes:
   postgres_data:
