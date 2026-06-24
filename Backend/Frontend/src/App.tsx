@@ -50,6 +50,7 @@ function App() {
             setFeedMode={setFeedMode}
             selectedTags={selectedTags}
             toggleTag={toggleTag}
+            currentUser={currentUser}
           />
         )}
         
@@ -83,7 +84,13 @@ function App() {
             } />
             
             <Route path="/chat" element={<ChatPage />} />
-            <Route path="/publish" element={<PublishPage onDone={() => navigate("/")} />} />
+            <Route path="/publish" element={
+                currentUser ? (
+                  <PublishPage onDone={() => navigate("/")} />
+                ) : (
+                  <Navigate to="/auth" replace /> 
+                )
+              } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

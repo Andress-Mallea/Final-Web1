@@ -36,7 +36,7 @@ export default function ArtworkCard({ art, onArtistClick }: ArtworkCardProps) {
     <div className={styles['artwork-card']}>
      
       <div className={styles['artwork-card__media']}>
-        <img src={art.imageUrl} alt={art.title} className={styles['artwork-card__image']} />
+        <img src={`http://localhost:8000${art.imageUrl}`} alt={art.title} className={styles['artwork-card__image']}/>
       </div>
       
       

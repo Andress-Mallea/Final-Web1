@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from redis.asyncio import Redis
-
+from fastapi.staticfiles import StaticFiles
 from core.config import settings
 import core.cache as cache
-
+import os
 from modules.identity.routers import router as identity_router
 from modules.catalog.routers import router as catalog_router
 from modules.business.routers import router as business_router
@@ -52,7 +52,8 @@ async def health_check():
         "message": "La API modular está funcionando y conectada."
     }
 
-
+os.makedirs("uploads", exist_ok=True) 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.include_router(identity_router, prefix=settings.API_V1_STR)
 app.include_router(catalog_router, prefix=settings.API_V1_STR)
 app.include_router(business_router, prefix=settings.API_V1_STR)

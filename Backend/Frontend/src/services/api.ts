@@ -14,8 +14,11 @@ export const login = async (username: string, password: string): Promise<any> =>
 
 
 export const getArtworks = async (): Promise<any[]> => {
-  const response = await api.get('/api/v1/artworks/'); 
+  const response = await api.get('/api/v1/artworks'); 
   return response.data;
 };
-
+export const getTags = async (): Promise<any[]> => {
+  const response = await api.get('/api/v1/tags'); 
+  return response.data;
+};
 export default api;
