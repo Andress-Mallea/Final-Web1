@@ -1,17 +1,39 @@
 @import './fonts.css';
-@import './tailwind.css';
 @import './theme.css';
-
+:root {
+  --primary-rgb: 124, 77, 255; 
+  --secondary-bg: var(--secondary);
+  --border-color: var(--border);
+  --muted-bg: var(--muted);
+  --background-bg: var(--background);
+  --card-bg: var(--card);
+}
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--foreground);
+  background-color: var(--background-bg);
 }
 
-button,
-input,
-textarea {
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
   font: inherit;
+}
+
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
 }
