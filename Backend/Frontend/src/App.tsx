@@ -91,7 +91,10 @@ function App() {
               />
             } />
             
-            <Route path="/chat" element={<ChatPage />} />
+            <Route
+              path="/chat"
+              element={currentUser ? <ChatPage /> : <Navigate to="/auth" replace />}
+            />
             <Route path="/publish" element={
                 currentUser ? (
                   <PublishPage onDone={() => navigate("/")} />

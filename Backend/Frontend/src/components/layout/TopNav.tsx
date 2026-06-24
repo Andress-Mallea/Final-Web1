@@ -50,7 +50,10 @@ const handlePublishClick = () => {
         {currentUser && (
           <>
             <Bell className="w-5 h-5 text-muted-foreground cursor-pointer" />
-            <MessageSquare className="w-5 h-5 text-muted-foreground cursor-pointer" />
+            <MessageSquare
+              onClick={() => navigate("/chat")}
+              className="w-5 h-5 text-muted-foreground cursor-pointer"
+            />
           </>
         )}
         {currentUser ? (
