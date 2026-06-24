@@ -10,6 +10,7 @@ from modules.identity.routers import router as identity_router
 from modules.catalog.routers import router as catalog_router
 from modules.business.routers import router as business_router
 from modules.interactions.routers import router as interactions_router
+from modules.messages.routers import router as messages_router
 
 
 @asynccontextmanager
@@ -58,3 +59,4 @@ app.include_router(identity_router, prefix=settings.API_V1_STR)
 app.include_router(catalog_router, prefix=settings.API_V1_STR)
 app.include_router(business_router, prefix=settings.API_V1_STR)
 app.include_router(interactions_router, prefix=settings.API_V1_STR)
+app.include_router(messages_router, prefix=settings.API_V1_STR)
