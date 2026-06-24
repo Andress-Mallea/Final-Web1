@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AuthPage from "./pages/AuthPage";
 import ChatPage from "./pages/ChatPage";
 import PublishPage from "./pages/PublishPage";
+import styles from "./App.module.css";
 interface User {
   name: string;
   avatar: string;
@@ -33,7 +34,7 @@ function App() {
   const showSidebar = location.pathname === "/"; 
 
   return (
-    <div className="min-h-screen bg-background text-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className={styles.app}>
       {showNav && (
         <TopNav
           searchQuery={searchQuery}
@@ -41,7 +42,8 @@ function App() {
           currentUser={currentUser}
         />
       )}
-      <div className={showNav ? "pt-14" : ""}>
+      
+      <div className={showNav ? styles.app__wrapper : ""}>
         {showSidebar && (
           <Sidebar
             feedMode={feedMode}
@@ -50,7 +52,8 @@ function App() {
             toggleTag={toggleTag}
           />
         )}
-        <main className={showSidebar ? "ml-56" : ""}>
+        
+        <main className={showSidebar ? styles['app__main--with-sidebar'] : styles.app__main}>
           <Routes>
             <Route path="/" element={
               <HubPage
