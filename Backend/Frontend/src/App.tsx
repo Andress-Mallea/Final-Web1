@@ -11,6 +11,7 @@ import styles from "./App.module.css";
 interface User {
   name: string;
   avatar: string;
+  token?: string;
 }
 function App() {
   const [feedMode, setFeedMode] = useState<string>("hub");
@@ -71,19 +72,29 @@ function App() {
             
             <Route path="/auth" element={
               <AuthPage
-                onSuccess={(userData: { username: string }) => {
+                onSuccess={(userData: { username: string; access_token?: string }) => {
                   const user: User = {
                     name: userData.username,
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + userData.username
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + userData.username,
+                    token: userData.access_token
                   };
+
                   setCurrentUser(user);
                   localStorage.setItem("arteria_user", JSON.stringify(user));
-                  navigate("/"); 
+
+                  if (userData.access_token) {
+                    localStorage.setItem("arteria_token", userData.access_token);
+                  }
+
+                  navigate("/");
                 }}
               />
             } />
             
-            <Route path="/chat" element={<ChatPage />} />
+            <Route
+              path="/chat"
+              element={currentUser ? <ChatPage /> : <Navigate to="/auth" replace />}
+            />
             <Route path="/publish" element={
                 currentUser ? (
                   <PublishPage onDone={() => navigate("/")} />
