@@ -91,7 +91,11 @@ export default function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag
               <MessageSquare className="w-4 h-4 shrink-0" /> Commissions
             </button>
             <button 
-              onClick={() => { localStorage.removeItem("arteria_user"); window.location.reload(); }}
+              onClick={() => {
+                localStorage.removeItem("arteria_user");
+                localStorage.removeItem("arteria_token");
+                window.location.reload();
+              }}
               className={`${styles.sidebar__link} ${styles.sidebar__signout}`}
             >
               <Settings className="w-4 h-4 shrink-0" /> Sign Out
