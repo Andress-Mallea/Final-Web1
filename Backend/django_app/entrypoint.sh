@@ -16,6 +16,7 @@ echo "Recolectando archivos estáticos para Nginx..."
 python manage.py collectstatic --noinput
 echo "Creando superusuario automáticamente..."
 python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
-
+echo "Ejecutando sembrado de datos (Seeding)..."
+python manage.py seed_db
 echo "Iniciando servidor de desarrollo de Django..."
 exec python manage.py runserver 0.0.0.0:8000
