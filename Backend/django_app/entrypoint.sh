@@ -3,18 +3,18 @@
 echo "Esperando a la base de datos PostgreSQL..."
 sleep 5
 
-echo "Configurando el módulo de Identidad..."
+echo "Configurando el modulo de Identidad..."
 python manage.py makemigrations identity
 python manage.py migrate identity
 
-echo "Generando migraciones de los demás módulos..."
+echo "Generando migraciones de los demas modulos..."
 python manage.py makemigrations
 echo "Aplicando todas las migraciones a PostgreSQL..."
 python manage.py migrate
 
-echo "Recolectando archivos estáticos para Nginx..."
+echo "Recolectando archivos estaticos para Nginx..."
 python manage.py collectstatic --noinput
-echo "Creando superusuario automáticamente..."
+echo "Creando superusuario automaticamente..."
 python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
 echo "Ejecutando sembrado de datos (Seeding)..."
 python manage.py seed_db
