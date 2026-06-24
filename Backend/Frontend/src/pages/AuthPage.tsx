@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { login } from "../services/api";
+import api, { login } from "../services/api"; 
 import styles from "./AuthPage.module.css";
 
 interface AuthPageProps {
@@ -7,7 +7,6 @@ interface AuthPageProps {
 }
 
 function AuthPage({ onSuccess }: AuthPageProps) {
-  
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -15,7 +14,6 @@ function AuthPage({ onSuccess }: AuthPageProps) {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
- 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(""); 
@@ -26,10 +24,25 @@ function AuthPage({ onSuccess }: AuthPageProps) {
         const data = await login(username, password);
         console.log("¡Login exitoso!", data);
         
+        if (data.access_token) {
+          localStorage.setItem("token", data.access_token);
+        }
+        
         if (onSuccess) onSuccess({ ...data, username }); 
       } else {
-        console.log("El registro se implementará en el próximo paso.");
-        setError("El registro aún no está conectado. Usa 'Sign In'.");
+        // 1. Registramos al usuario usando 'api'
+        await api.post("/api/v1/auth/register", {
+          username,
+          email,
+          password
+        });
+        
+        // 2. Si el registro es exitoso, iniciamos sesión automáticamente
+        const data = await login(username, password);
+        if (data.access_token) {
+          localStorage.setItem("token", data.access_token);
+        }
+        if (onSuccess) onSuccess({ ...data, username }); 
       }
     } catch (err: any) { 
       console.error("Error de autenticación:", err);
@@ -37,7 +50,7 @@ function AuthPage({ onSuccess }: AuthPageProps) {
       if (Array.isArray(detail)) {
         setError("Faltan campos obligatorios o el formato es incorrecto.");
       } else {
-        setError(detail || "Usuario o contraseña incorrectos.");
+        setError(detail || "Error al procesar la solicitud.");
       }
     } finally {
       setIsLoading(false);

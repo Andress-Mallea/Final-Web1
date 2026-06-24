@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { getArtworks } from "../services/api"; 
-import { normalizeArtwork } from "../utils/normalizeArtwork";
 import Avatar from "../components/common/Avatar";
+import ArtworkCard, { Artwork } from "../components/artwork/ArtworkCard";
+import api from "../services/api";
 import styles from "./ProfilePage.module.css";
-
+import { useNavigate } from "react-router-dom";
 export interface User {
   name: string;
   avatar: string;
 }
-
 
 interface ProfilePageProps {
   onBack: () => void;
@@ -17,30 +16,48 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
-
-  const [myArtworks, setMyArtworks] = useState<any[]>([]);
-
+  const [profile, setProfile] = useState<any>(null);
+  const [myArtworks, setMyArtworks] = useState<Artwork[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
-
-    if (!currentUser) return;
-
-    getArtworks().then((data: any[]) => {
-      const filtered = data
-        .map(normalizeArtwork)
-        .filter((art: any) => {
-         
-          return art.artist?.toLowerCase() === currentUser.name?.toLowerCase();
-        });
-      setMyArtworks(filtered);
-    }).catch((error) => {
-      console.error("Error cargando el perfil:", error);
-    });
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      console.warn("Acceso denegado. Redirigiendo al login...");
+      navigate("/auth"); 
+    }
+  }, [navigate]);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get("/api/v1/auth/me");
+        setProfile(response.data);
+        
+        
+        const formattedArtworks = response.data.artworks.map((art: any) => ({
+          id: String(art.id),
+          title: art.title,
+          imageUrl: art.image_url, 
+          artist: response.data.username,
+          artistAvatar: currentUser?.avatar || "",
+          tags: [],
+          // Leemos los datos reales del backend, y si por alguna razón no vienen, ponemos 0/false por defecto
+          likes: art.likes || 0,
+          views: art.views_count || 0,
+          isLiked: art.isLiked || false,
+          isBookmarked: false,
+          aspectRatio: "square" as const
+        }));
+        
+        setMyArtworks(formattedArtworks);
+      } catch (err) {
+        console.error("Error cargando perfil:", err);
+      }
+    };
+    fetchProfile();
   }, [currentUser]);
 
- 
-  if (!currentUser) {
-    return null;
-  }
+  if (!currentUser) return null;
 
   return (
     <div className={styles.profile}>
@@ -55,8 +72,8 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
         <div className={styles.profile__info}>
           <Avatar src={currentUser.avatar} size={24} className="border-4 border-background" />
           <div className={styles['profile__user-details']}>
-            <h2 className={styles.profile__name}>{currentUser.name}</h2>
-            <p className={styles.profile__handle}>@{currentUser.name?.toLowerCase()}</p>
+            <h2 className={styles.profile__name}>{profile?.username || currentUser.name}</h2>
+            <p className={styles.profile__handle}>@{profile?.username?.toLowerCase() || "usuario"}</p>
           </div>
         </div>
 
@@ -64,12 +81,13 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
           <div className={styles.profile__grid}>
             {myArtworks.map((art) => (
               <div key={art.id} className={styles['profile__art-card']}>
-                <img src={art.imageUrl} className={styles['profile__art-image']} alt={art.title} />
-                <div className={styles['profile__art-title']}>{art.title}</div>
+                <ArtworkCard 
+                  art={art} 
+                  onArtistClick={() => {}} 
+                />
               </div>
             ))}
           </div>
-          {myArtworks.length === 0 && <p className="text-muted-foreground">Aún no has subido ninguna obra.</p>}
         </div>
       </div>
     </div>

@@ -7,6 +7,9 @@ class ArtworkResponse(BaseModel):
     description: Optional[str] = None
     image_url: str
     views_count: Optional[int] = 0
+    artist: str
+    likes: int = 0
+    isLiked: bool = False
     class Config: 
         from_attributes = True
 class TagResponse(BaseModel):

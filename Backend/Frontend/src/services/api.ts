@@ -11,7 +11,20 @@ export const login = async (username: string, password: string): Promise<any> =>
   const response = await api.post('/api/v1/auth/login', { username, password });
   return response.data;
 };
-
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); 
+    
+    if (token) {
+    
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const getArtworks = async (): Promise<any[]> => {
   const response = await api.get('/api/v1/artworks'); 

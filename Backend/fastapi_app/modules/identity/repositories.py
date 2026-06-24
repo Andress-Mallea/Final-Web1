@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String, select
+from sqlalchemy import Column, String, select, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.interfaces import BaseRepository
+from sqlalchemy.sql import func
 import uuid
 
 Base = declarative_base()
@@ -14,6 +15,14 @@ class UserORM(Base):
     email = Column(String, unique=True)
     password = Column(String)
     role = Column(String)
+    
+    # --- CAMPOS OBLIGATORIOS DE DJANGO ---
+    first_name = Column(String, default="")
+    last_name = Column(String, default="")
+    is_superuser = Column(Boolean, default=False)
+    is_staff = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    date_joined = Column(DateTime(timezone=True), default=func.now())
 
 class UserRepository(BaseRepository):
     def __init__(self, db: AsyncSession):
@@ -23,6 +32,8 @@ class UserRepository(BaseRepository):
         new_user = UserORM(**user_data)
         self.db.add(new_user)
         await self.db.commit()
+        # ¡ESTO FALTA! Refresca el objeto para que FastAPI pueda leer el ID y otros datos
+        await self.db.refresh(new_user) 
         return new_user
 
     async def get_by_id(self, user_id):
@@ -43,3 +54,13 @@ class UserRepository(BaseRepository):
     async def get_by_username(self, username: str):
         result = await self.db.execute(select(UserORM).where(UserORM.username == username))
         return result.scalars().first()
+    async def get_user_with_artworks(self, user_id):
+        user_result = await self.db.execute(select(UserORM).where(UserORM.id == user_id))
+        user = user_result.scalars().first()
+        if not user:
+            return None
+        from modules.catalog.repositories import ArtworkORM
+        artworks_result = await self.db.execute(select(ArtworkORM).where(ArtworkORM.artist_id == user_id))
+        user.artworks = artworks_result.scalars().all()
+        
+        return user

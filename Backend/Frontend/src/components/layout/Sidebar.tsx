@@ -27,7 +27,10 @@ export default function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag
   }, []);
   const isActive = (path: string, mode?: string) => 
     currentPath === path && (!mode || feedMode === mode);
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/auth");
+  };
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebar__section}>
@@ -91,7 +94,7 @@ export default function Sidebar({ feedMode, setFeedMode, selectedTags, toggleTag
               <MessageSquare className="w-4 h-4 shrink-0" /> Commissions
             </button>
             <button 
-              onClick={() => { localStorage.removeItem("arteria_user"); window.location.reload(); }}
+              onClick={handleLogout}
               className={`${styles.sidebar__link} ${styles.sidebar__signout}`}
             >
               <Settings className="w-4 h-4 shrink-0" /> Sign Out

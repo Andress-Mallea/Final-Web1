@@ -4,7 +4,9 @@ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy import text
 from datetime import datetime, timezone
+from sqlalchemy.orm import joinedload
 import uuid
+
 from modules.identity.repositories import Base
 
 artwork_tags = Table(
@@ -29,11 +31,14 @@ class ArtworkORM(Base):
     description = Column(String)
     image_url = Column(String)
     views_count = Column(Integer, default=0)
-    
+    artist = relationship(
+        "UserORM", 
+        primaryjoin="ArtworkORM.artist_id == UserORM.id"
+    )
    
     created_at = Column(DateTime, default=func.now()) 
     
-    artist_id = Column(PG_UUID(as_uuid=True)) 
+    artist_id = Column(ForeignKey("identity_user.id"))
     category_id = Column(PG_UUID(as_uuid=True)) 
 
     tags = relationship("TagORM", secondary="catalog_artwork_tags", lazy="selectin")
@@ -50,7 +55,8 @@ class ArtworkRepository:
         self.db = db
 
     async def get_all_artworks(self):
-        result = await self.db.execute(select(ArtworkORM).limit(50))
+        query = select(ArtworkORM).options(joinedload(ArtworkORM.artist))
+        result = await self.db.execute(query)
         return result.scalars().all()
 
     async def create_artwork(self, title: str, description: str, image_url: str, tag_ids: list, artist_id: int):

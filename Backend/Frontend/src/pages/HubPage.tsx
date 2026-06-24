@@ -45,9 +45,9 @@ export default function HubPage({
         artist: art.artist?.username || art.artist || "Artista Desconocido",
         artistAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + (art.artist?.username || art.id),
         tags: art.tags || [],
-        likes: art.likes_count || 0,
-        views: art.views_count || art.views || 0,
-        isLiked: false,
+        likes: art.likes || 0,
+        views: art.views_count || 0,
+        isLiked: art.isLiked || false,
         isBookmarked: false,
         aspectRatio: "portrait" 
       }));

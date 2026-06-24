@@ -61,3 +61,13 @@
   align-items: center;
   gap: 0.35rem;
 }
+.card__like-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit; /* Hereda el color claro del texto circundante */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Pequeño espacio entre el corazón y el número */
+}
