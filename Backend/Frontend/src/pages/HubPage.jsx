@@ -6,14 +6,7 @@ import ArtworkCard from "../components/artwork/ArtworkCard";
 import TagPill from "../components/common/TagPill";
 
 const PAGE_SIZE = 6;
-function generatePage(base, pageIndex) {
-  const aspects = ["portrait", "landscape", "square"];
-  return base.map((art, i) => ({
-    ...art,
-    id: `${pageIndex}-${art.id}`, 
-    aspectRatio: art.aspectRatio || aspects[(i + pageIndex) % 3]
-  }));
-}
+
 
 function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick }) {
  
@@ -81,15 +74,18 @@ function HubPage({ feedMode, selectedTags = [], searchQuery = "", onArtistClick 
   }, [feedMode, selectedTags.join(","), searchQuery, artworks]);
 
   const loadMore = useCallback(() => {
-    if (loading || !hasMore || baseFiltered.length === 0) return;
+    if (loading || !hasMore || baseFiltered.length === 0) return; 
     setLoading(true);
     setTimeout(() => {
-      const nextPage = generatePage(baseFiltered, pageIndex);
-      setVisibleItems((prev) => [...prev, ...nextPage]);
-      setPageIndex((p) => p + 1);
-      if (pageIndex >= 4) setHasMore(false);
+      const nextPageIndex = pageIndex + 1;
+      const nextLimit = nextPageIndex * PAGE_SIZE;
+      setVisibleItems(baseFiltered.slice(0, nextLimit));
+      setPageIndex(nextPageIndex);
+      if (nextLimit >= baseFiltered.length) {
+        setHasMore(false);
+      }
       setLoading(false);
-    }, 800);
+    }, 500);
   }, [loading, hasMore, baseFiltered, pageIndex]);
 
   useEffect(() => {
