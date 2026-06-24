@@ -3,7 +3,7 @@ import { Filter, Sparkles } from "lucide-react";
 import { getArtworks } from "../services/api";
 import ArtworkCard, { Artwork } from "../components/artwork/ArtworkCard";
 import TagPill from "../components/common/TagPill";
-
+import styles from "./HubPage.module.css";
 const PAGE_SIZE = 6;
 
 
@@ -121,65 +121,39 @@ export default function HubPage({
   }, [loadMore]);
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 style={{ fontFamily: "'Playfair Display', serif" }} className="text-2xl font-semibold text-foreground">
-          {feedMode === "hub" ? "Explore" : "Following"}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {feedMode === "hub" ? "Discover artwork from the global community" : "Latest from artists you follow"}
-        </p>
-      </div>
+    <div className={styles.hub}>
+      <header className={styles.hub__header}>
+        <h1 className={styles.hub__title}>{feedMode === "hub" ? "Explore" : "Following"}</h1>
+        <p className={styles.hub__subtitle}>{feedMode === "hub" ? "Discover artwork" : "Latest from artists"}</p>
+      </header>
 
-      {backendLoading && (
-        <p className="mb-4 text-xs font-mono text-muted-foreground animate-pulse">
-          Sincronizando con PostgreSQL...
-        </p>
-      )}
+      {backendLoading && <p className={styles.hub__loader}>Sincronizando con PostgreSQL...</p>}
 
       {selectedTags.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className={styles.hub__filters}>
           <span className="text-xs text-muted-foreground flex items-center gap-1">
             <Filter className="w-3 h-3" /> Filtering:
           </span>
-          {selectedTags.map((tag) => (
-            <TagPill key={tag} tag={tag} active={true} />
-          ))}
+          {selectedTags.map((tag) => <TagPill key={tag} tag={tag} active={true} />)}
         </div>
       )}
-      {visibleItems.length === 0 && !backendLoading && !loading ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
+
+      {visibleItems.length === 0 && !backendLoading ? (
+        <div className={styles.hub__empty}>
           <Sparkles className="w-10 h-10 text-muted-foreground mb-3 opacity-50" />
-          <p className="text-muted-foreground">Tu galería está vacía. ¡Sube tu primera obra!</p>
+          <p className="text-muted-foreground">Tu galería está vacía.</p>
         </div>
       ) : (
         <Fragment>
-          <div className="columns-2 lg:columns-3 gap-4">
+          <div className={styles.hub__grid}>
             {visibleItems.map((art) => (
-              <div key={art.id} className="break-inside-avoid mb-4">
+              <div key={art.id} className={styles['hub__card-wrapper']}>
                 <ArtworkCard art={art} onArtistClick={onArtistClick} />
               </div>
             ))}
           </div>
-
-          <div ref={sentinelRef} className="flex items-center justify-center py-10">
-            {loading && (
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <div className="flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className="w-2 h-2 rounded-full bg-primary/60 animate-bounce"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm font-mono">Cargando más...</span>
-              </div>
-            )}
-            {!hasMore && !loading && visibleItems.length > 0 && (
-              <p className="text-xs font-mono text-muted-foreground">— Has llegado al final —</p>
-            )}
+          <div ref={sentinelRef} className={styles.hub__sentinel}>
+            {loading && <span className="font-mono text-sm">Cargando...</span>}
           </div>
         </Fragment>
       )}

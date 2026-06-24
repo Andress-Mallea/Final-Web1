@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { getArtworks } from "../services/api"; 
 import { normalizeArtwork } from "../utils/normalizeArtwork";
 import Avatar from "../components/common/Avatar";
-
+import styles from "./ProfilePage.module.css";
 
 export interface User {
   name: string;
@@ -43,33 +43,29 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
   }
 
   return (
-    <div className="pb-12">
-      <div className="relative h-52 bg-muted overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=300&fit=crop&auto=format" 
-          className="w-full h-full object-cover" 
-          alt="Profile cover"
-        />
-        <button onClick={onBack} className="absolute top-4 left-4 p-2 rounded-lg bg-black/40 backdrop-blur-sm text-white">
+    <div className={styles.profile}>
+      <div className={styles.profile__header}>
+        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=300&fit=crop&auto=format" className={styles.profile__cover} alt="Profile cover" />
+        <button onClick={onBack} className={styles['profile__back-btn']}>
           <ArrowLeft className="w-4 h-4" />
         </button>
       </div>
-      <div className="px-6 -mt-12 relative">
-        <div className="flex items-end gap-4">
+      
+      <div className={styles.profile__content}>
+        <div className={styles.profile__info}>
           <Avatar src={currentUser.avatar} size={24} className="border-4 border-background" />
-          <div className="mb-2">
-            <h2 className="text-xl font-bold text-foreground">{currentUser.name}</h2>
-            <p className="text-sm text-muted-foreground font-mono">@{currentUser.name?.toLowerCase()}</p>
+          <div className={styles['profile__user-details']}>
+            <h2 className={styles.profile__name}>{currentUser.name}</h2>
+            <p className={styles.profile__handle}>@{currentUser.name?.toLowerCase()}</p>
           </div>
         </div>
+
         <div className="pt-6">
-          <div className="columns-2 lg:columns-3 gap-4">
+          <div className={styles.profile__grid}>
             {myArtworks.map((art) => (
-              <div key={art.id} className="break-inside-avoid mb-4 rounded-xl overflow-hidden bg-card border border-border">
-                <img src={art.imageUrl} className="w-full object-cover" alt={art.title} />
-                <div className="p-3">
-                  <p className="text-sm font-semibold">{art.title}</p>
-                </div>
+              <div key={art.id} className={styles['profile__art-card']}>
+                <img src={art.imageUrl} className={styles['profile__art-image']} alt={art.title} />
+                <div className={styles['profile__art-title']}>{art.title}</div>
               </div>
             ))}
           </div>
