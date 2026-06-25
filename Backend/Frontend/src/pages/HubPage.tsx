@@ -11,7 +11,7 @@ interface HubPageProps {
   feedMode: string;
   selectedTags?: string[];
   searchQuery?: string;
-  onArtistClick: () => void;
+  onArtistClick: (artist: { name: string; avatar: string}) => void;
 }
 
 export default function HubPage({ 

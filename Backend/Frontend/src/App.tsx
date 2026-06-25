@@ -33,6 +33,7 @@ function App() {
   }
   const showNav = location.pathname !== "/auth";
   const showSidebar = location.pathname === "/"; 
+  const [profileUser, setProfileUser] = useState<User | null>(null);
 
   return (
     <div className={styles.app}>
@@ -62,12 +63,15 @@ function App() {
                 feedMode={feedMode}
                 selectedTags={selectedTags}
                 searchQuery={searchQuery}
-                onArtistClick={() => navigate("/profile")}
+                onArtistClick={(artist) => {
+                  setProfileUser(artist);
+                  navigate("/profile");
+                }}
               />
             } />
             
             <Route path="/profile" element={
-              <ProfilePage onBack={() => navigate("/")} currentUser={currentUser} />
+              <ProfilePage onBack={() => navigate("/")} currentUser={currentUser} profileUser={profileUser ?? currentUser} />
             } />
             
             <Route path="/auth" element={

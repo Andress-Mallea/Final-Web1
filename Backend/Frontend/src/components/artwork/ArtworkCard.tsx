@@ -21,7 +21,7 @@ export interface Artwork {
 
 interface ArtworkCardProps {
   art: Artwork;
-  onArtistClick: () => void;
+  onArtistClick: (artist: { name: string; avatar: string}) => void;
 }
 
 export default function ArtworkCard({ art, onArtistClick }: ArtworkCardProps) {
@@ -76,7 +76,7 @@ export default function ArtworkCard({ art, onArtistClick }: ArtworkCardProps) {
       </div>
       
       <div className={styles.card__footer}>
-        <button onClick={(e) => { e.stopPropagation(); onArtistClick(); }} className={styles.card__artist}>
+        <button onClick={(e) => { e.stopPropagation(); onArtistClick({ name: art.artist, avatar: art.artistAvatar}); }} className={styles.card__artist}>
           <Avatar src={art.artistAvatar} size={8} />
           <span>{art.artist}</span>
         </button>

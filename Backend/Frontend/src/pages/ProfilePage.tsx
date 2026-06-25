@@ -13,9 +13,10 @@ export interface User {
 interface ProfilePageProps {
   onBack: () => void;
   currentUser: User | null;
+  profileUser: User | null;
 }
 
-export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
+export default function ProfilePage({ onBack, profileUser }: ProfilePageProps) {
   const [profile, setProfile] = useState<any>(null);
   const [myArtworks, setMyArtworks] = useState<Artwork[]>([]);
   const navigate = useNavigate();
@@ -39,9 +40,9 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
           title: art.title,
           imageUrl: art.image_url, 
           artist: response.data.username,
-          artistAvatar: currentUser?.avatar || "",
+          artistAvatar: profileUser?.avatar || "",
           tags: [],
-          // Leemos los datos reales del backend, y si por alguna razón no vienen, ponemos 0/false por defecto
+          // Leemos los datos reales del backend, y si por alguna razón no vienen, ponemos false por defecto
           likes: art.likes || 0,
           views: art.views_count || 0,
           isLiked: art.isLiked || false,
@@ -55,9 +56,9 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
       }
     };
     fetchProfile();
-  }, [currentUser]);
+  }, [profileUser]);
 
-  if (!currentUser) return null;
+  if (!profileUser) return null;
 
   return (
     <div className={styles.profile}>
@@ -70,9 +71,9 @@ export default function ProfilePage({ onBack, currentUser }: ProfilePageProps) {
       
       <div className={styles.profile__content}>
         <div className={styles.profile__info}>
-          <Avatar src={currentUser.avatar} size={24} className="border-4 border-background" />
+          <Avatar src={profileUser.avatar} size={24} className="border-4 border-background" />
           <div className={styles['profile__user-details']}>
-            <h2 className={styles.profile__name}>{profile?.username || currentUser.name}</h2>
+            <h2 className={styles.profile__name}>{profile?.username || profileUser.name}</h2>
             <p className={styles.profile__handle}>@{profile?.username?.toLowerCase() || "usuario"}</p>
           </div>
         </div>
